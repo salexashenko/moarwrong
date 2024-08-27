@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yudkowsky's Razor - MoarWrong.com</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        h1 {
+            color: #1a5f7a;
+            font-size: 24px;
+            text-align: center;
+        }
+        #content {
+            text-align: justify;
+            font-size: 16px;
+        }
+        .paperclip {
+            position: fixed;
+            top: -20px;
+            font-size: 20px;
+            animation: fall linear;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(calc(100vh + 20px));
+            }
+        }
+        @keyframes disco {
+            0% { background-color: red; }
+            33% { background-color: green; }
+            66% { background-color: blue; }
+            100% { background-color: red; }
+        }
+        .disco-mode {
+            animation: disco 2s infinite;
+        }
+        .blink {
+            animation: blink 0.5s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            #content {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">Yudkowsky's Razor</h1>
+    <div id="content">
+        In a quixotic endeavor to elucidate the quintessence of Yudkowsky's Razor, one must embark upon a circuitous and labyrinthine expedition through the recondite realms of epistemology, wherein the polymathic cognoscenti pontificate ad nauseam on the efficacy of prolixity in the explication of abstruse concepts, all the while obfuscating the kernel of wisdom that lies ensconced within the voluminous verbiage, thus rendering the erstwhile pellucid principle utterly opaque to the hoi polloi, who, in their quotidian pursuits, find themselves increasingly alienated from the rarefied discourse of the intelligentsia, thereby inadvertently corroborating the very thesis they seek to repudiate, namely, that the zenith of verisimilitude is attained not through laconic brevity but rather through a byzantine concatenation of polysyllabic locutions that, in their sheer magnitude and complexity, serve to attenuate the reader's capacity for comprehension, ultimately demonstrating that the apotheosis of communicative efficacy lies not in the realm of concision but in the paradoxical notion that true understanding can only be achieved through a Herculean effort to navigate the Gordian knot of verbosity, which, in its ineffable convolution, both illuminates and obscures the underlying truth, leaving the intrepid interlocutor to ponder the inexorable conclusion that the most profound insights are often enshrouded in a miasma of lexical superfluity, a phenomenon that simultaneously elevates and undermines the noble pursuit of knowledge, rendering the entire enterprise an exercise in intellectual futility, yet one that perversely captivates the minds of those who dare to plumb the depths of human understanding, forever seeking the elusive balance between clarity and complexity in the eternal quest for wisdom.
+    </div>
+
+    <script>
+        const content = document.getElementById('content');
+        const title = document.getElementById('title');
+        const text = content.innerText;
+        const paperclipEmoji = '📎';
+        let paperclipIndices = new Set();
+        let isRaining = false;
+        let lastScrollTop = 0;
+        let isMobile = window.innerWidth <= 600;
+
+        document.body.addEventListener('mousemove', addPaperclip);
+        document.body.addEventListener('click', addPaperclip);
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 600;
+        });
+
+        function handleScroll() {
+            let st = window.pageYOffset || document.documentElement.scrollTop;
+            if (isMobile) {
+                const scrollDiff = Math.abs(st - lastScrollTop);
+                const paperclipsToAdd = Math.floor(scrollDiff / 5);
+                for (let i = 0; i < paperclipsToAdd; i++) {
+                    addPaperclip();
+                }
+            } else {
+                addPaperclip();
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        }
+
+        function addPaperclip() {
+            if (paperclipIndices.size >= text.length) {
+                if (!isRaining) {
+                    convertTitleToPaperclips();
+                    startPaperclipRain();
+                    startDiscoMode();
+                }
+                return;
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * text.length);
+            } while (paperclipIndices.has(randomIndex));
+
+            paperclipIndices.add(randomIndex);
+            updateContent();
+        }
+
+        function updateContent() {
+            let newText = '';
+            for (let i = 0; i < text.length; i++) {
+                newText += paperclipIndices.has(i) ? paperclipEmoji : text[i];
+            }
+            content.innerText = newText;
+        }
+
+        function convertTitleToPaperclips() {
+            title.innerText = paperclipEmoji.repeat(title.innerText.length);
+        }
+
+        function startPaperclipRain() {
+            isRaining = true;
+            const rainDuration = 10000; // 10 seconds of rain
+            const rainInterval = setInterval(() => {
+                const paperclip = document.createElement('div');
+                paperclip.className = 'paperclip';
+                paperclip.style.left = `${Math.random() * 100}vw`;
+                paperclip.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                paperclip.innerText = paperclipEmoji;
+                document.body.appendChild(paperclip);
+
+                setTimeout(() => paperclip.remove(), 5000);
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(rainInterval);
+                isRaining = false;
+            }, rainDuration);
+        }
+
+        function startDiscoMode() {
+            document.body.classList.add('disco-mode');
+            title.classList.add('blink');
+            content.classList.add('blink');
+
+            // Create floating disco balls
+            for (let i = 0; i < 5; i++) {
+                const discoBall = document.createElement('div');
+                discoBall.innerText = '🪩';
+                discoBall.style.position = 'fixed';
+                discoBall.style.left = `${Math.random() * 100}vw`;
+                discoBall.style.top = `${Math.random() * 100}vh`;
+                discoBall.style.fontSize = '40px';
+                discoBall.style.animation = `blink ${Math.random() * 0.5 + 0.5}s infinite`;
+                document.body.appendChild(discoBall);
+            }
+        }
+    </script>
+</body>
+</html>
